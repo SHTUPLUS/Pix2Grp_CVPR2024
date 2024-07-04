@@ -1,0 +1,114 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+
+
+model:
+  arch: blip2_opt_vrd
+  model_type: base_psg
+  
+  use_grad_checkpoint: True
+  freeze_vit: True
+  
+  load_finetuned: False
+  # pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP2/rel_detection_psg/20230526145-partial_lyr_pos_adaptor_no_label_smooth-zs_predicates-train/checkpoint_20.pth"
+
+  max_txt_len: 2048 # test time
+
+  vit_precision: fp32
+
+  max_objects: 8
+  dump_pred: False
+  dump_dir: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/rel_detection_psg/vis_dump_val"
+  
+  num_coord_bin: 640
+  # image_size: 364
+  image_size: 224
+
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/psg/categories_dict.json"
+
+  pos_adapter: True
+  pos_adapter_tfmer_layer: 6
+
+  finetune_strategy: 'partial_lyr_lora'
+  finetune_layer_num: 0
+
+datasets:
+  psg_rel_detection_zs_pred: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "blip_det_image_train"
+          # image_size: 364
+          image_size: 224
+        eval:
+          name: "blip_det_image_eval"
+          # image_size: 364
+          image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "A visual scene of "
+        eval:
+          name: "blip_caption"
+
+
+run:
+  task: relation_detection
+  # optimizer
+
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 1e-5
+  min_lr: 0
+  warmup_lr: 1e-8
+  warmup_steps: 100
+  weight_decay: 0.05
+
+  max_epoch: 50
+
+  special_lr_param: 
+    - ["opt_model.pos_adapter", 1e-4,  1e-4]
+    - ["opt_model.model.decoder.embed_tokens.weight", 0.0,  0.05]
+
+  batch_size_train: 16
+  batch_size_eval: 18
+  num_workers: 4
+
+  save_epoch: 4
+
+  max_len: 1500
+  min_len: 64
+
+  # max_len: 2048 # inference time
+  # min_len: 300
+  num_beams: 1
+
+  seed: 42
+  output_dir: "output/BLIP2/rel_detection_psg"
+
+  experiments_mode: sggen # sggen sgcls
+  generation_mode: sampling # sampling search
+
+  amp: False
+  resume_ckpt_path: null
+
+  evaluate: False 
+  train_splits: ["train"]
+  # train_splits: ["train_zs_pred"]
+  # train_splits: ["train_zs_trip"]
+  valid_splits: ["val"]
+  test_splits: ["test"]
+  # valid_splits: ["train"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/psg/categories_dict.json"
+  
+  
+  zeroshot_cfg:
+    zs_triplets: '/mnt/petrelfs/lirongjie/project/LAVIS/cache/psg/zeroshot_triplet_new.pytorch'
+    zs_predicate: [37, 0, 38, 51, 25, 44, 18, 46, 32, 12, 39, 15, 13, 6, 28, 40]
+

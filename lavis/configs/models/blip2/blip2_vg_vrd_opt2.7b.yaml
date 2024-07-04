@@ -1,0 +1,62 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip2_opt_vrd
+  model_type: base_psg
+  load_finetuned: True
+
+  pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/blip2_pretrained_opt2.7b.pth"
+  # finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/blip2_pretrained_opt2.7b.pth"
+  finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP2/rel_detection_psg/20230526102-lora_pos_adaptor_no_label_smooth_special_lr_continue-train/checkpoint_45.pth"
+
+  # vit encoder
+  image_size: 364
+  drop_path_rate: 0
+  use_grad_checkpoint: False
+  vit_precision: "fp32"
+  freeze_vit: True
+
+  # Q-Former
+  num_query_token: 32
+
+  # OPT
+  opt_model: "facebook/opt-2.7b"
+
+  # generation configs
+  prompt: "a photo of"
+
+
+  # xdecoder for vrd
+  finetune_strategy: partial_lyr
+
+  # image_size: 640
+  top_k_ent_label_num: 1
+  top_k_predicate_label_num: 2
+
+  aux_close_classifier: False
+
+  pos_adapter: True
+  pos_adapter_conv: "none"
+  pos_adapter_tfmer_layer: 6
+
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/psg/categories_dict.json"
+  # "The scene of "
+
+
+preprocess:
+    vis_processor:
+        train:
+          # image_size: 640
+          name: "blip_det_image_train"
+        eval:
+          # image_size: 640
+          name: "blip_det_image_eval"
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "a picture of "
+        eval:
+          name: "blip_caption"

@@ -1,0 +1,70 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection
+  model_type: base_vg
+
+  max_txt_len: 1024 # training time
+  # max_objects: 50
+  dump_pred: False
+  aux_close_classifier: False
+  dump_dir: "lavis/output/BLIP/rel_detection_vg/vis_dump_val"
+
+
+  
+  num_coord_bin: 640
+  image_size: 384
+  # image_size: 640  
+  cate_dict_url: "/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/categories_dict.json"
+
+datasets:
+  vg_rel_detection_eval: # name of the dataset builder
+  # vg_rel_detection_train: # name of the dataset builder
+    vis_processor:
+        eval:
+          name: "blip_det_image_eval"
+          image_size: 384
+        train:
+          name: "blip_det_image_eval"
+          image_size: 384
+    text_processor:
+        eval:
+          name: "blip_caption"
+          
+
+run:
+  # task: retrieval
+  task: relation_detection
+  # optimizer
+  batch_size_train: 16
+  batch_size_eval: 16
+  num_workers: 4
+
+  max_len: 1024
+  min_len: 768
+  num_beams: 1
+
+  experiments_mode: sggen # sggen sgcls
+  generation_mode: sampling # sampling search
+
+  seed: 42
+  output_dir: "output/BLIP/rel_detection_vg"
+
+  evaluate: True
+  test_splits: ["val"]
+  # test_splits: ["test"]
+  # test_splits: ["train"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/categories_dict.json"
+  
+  zeroshot_cfg:
+    zs_triplets: '/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/zeroshot_triplet_lavis.pytorch'
+    zs_predicate: [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 23, 25, 26, 27, 31, 34, 35, 36, 40, 41, 42, 44, 48]
+

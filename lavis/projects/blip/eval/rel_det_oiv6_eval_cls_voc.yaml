@@ -1,0 +1,57 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection_close_vocab
+  model_type: base_oiv6
+
+  max_txt_len: 1024 # training time
+  max_objects: 50
+
+  aux_close_classifier: False
+  dump_pred: False
+  dump_dir: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/rel_detection_oiv6/vis_dump"
+
+
+datasets:
+  oiv6_rel_detection: # name of the dataset builder
+    vis_processor:
+        eval:
+          name: "blip_det_image_eval"
+        train:
+          name: "blip_det_image_eval"
+    text_processor:
+        eval:
+          name: "blip_caption"
+
+run:
+  # task: retrieval
+  task: relation_detection
+  # optimizer
+  batch_size_train: 24
+  batch_size_eval: 24
+  num_workers: 3
+
+
+  max_len: 1024
+  min_len: 768
+  num_beams: 1
+
+  experiments_mode: sggen # sggen sgcls
+
+  seed: 42
+  output_dir: "output/BLIP/rel_detection_oiv6"
+
+  evaluate: True
+  test_splits: ["val"]
+  # test_splits: ["test"]
+  # test_splits: ["train"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/openimages/open-imagev6/annotations/categories_dict.json"
+  

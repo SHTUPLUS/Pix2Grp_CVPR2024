@@ -1,0 +1,112 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection_pgsg
+  model_type: base_psg
+  load_finetuned: False
+  pretrained: "cache/ckpts/model_base_capfilt_large.pth"
+
+  num_coord_bin: 640
+  seg_len: 32
+
+  add_noise: False
+  dump_pred: False
+
+  max_txt_len: 512 # training time
+  max_objects: 12
+  max_pos_objects: 8
+  mask_label_ratio: 0.0
+  reduction: 'mean' # none mean
+
+  prompt: "The visual scene of "
+  aux_close_classifier: False
+
+  image_size: 384
+  box_loss_weight: 1.2
+  cate_dict_url: "cache/psg/categories_dict.json"
+
+  close_clser: True
+  post_proc_cfg:
+    ent_ampl_scale: 3.0
+    ent_temperature: 1.0
+    rel_ampl_scale: 1.0
+    rel_temperature: 1.0
+
+  # "The scene of "
+
+
+datasets:
+  psg_rel_detection: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "blip_det_image_train"
+          image_size: 384
+        eval:
+          name: "blip_det_image_eval"
+          image_size: 384
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "a picture of "
+        eval:
+          name: "blip_caption"
+
+run:
+  task: relation_detection
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 1.e-5
+  min_lr: 1e-7
+  weight_decay: 0.05
+  max_epoch: 101
+
+  special_lr_param: 
+    - ["text_decoder.pos_encoder", 1e-4,  1e-4]
+    - ["text_decoder.pos_decoder", 1e-4,  1e-4]
+    - ["text_decoder.bbox_embed", 1e-4,  1e-4]
+    - ["text_decoder.enc_input_proj", 1e-4,  1e-4]
+    - ["text_decoder.ent_hs_input_proj", 1e-4,  1e-4]
+    - ['close_classifier', 1e-4,  1e-4]
+    - ["text_decoder.bert.embeddings.word_embeddings", 1e-20,  0.05]
+
+  batch_size_train: 32
+  batch_size_eval: 32
+  num_workers: 4
+
+  save_epoch: 5
+
+  max_len: 512
+  min_len: 512
+
+  # max_len: 2048 # inference time
+  # min_len: 300
+  num_beams: 1
+
+  seed: 42
+  output_dir: "output/BLIP/rel_detection_psg"
+
+  experiments_mode: sggen # sggen sgcls
+  generation_mode: sampling # sampling search
+
+
+  amp: False
+  resume_ckpt_path: null
+
+  evaluate: False 
+  train_splits: ["train"]
+  test_splits: ["test"]
+  valid_splits: ["val"]
+
+  device: "cuda"
+  world_size: 1
+
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "cache/psg/categories_dict.json"
+
+  zeroshot_cfg:
+    zs_triplets: 'cache/psg/zeroshot_triplet_new.pytorch'
+    zs_predicate: [38, 17, 27, 45, 24, 32, 15, 9, 53, 29, 50, 21, 36, 13, 54, 22, 16, 44, 12, 25, 11, 41, 10, 1, 39]

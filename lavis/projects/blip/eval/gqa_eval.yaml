@@ -1,0 +1,53 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_vqa
+  model_type: gqa
+  image_size: 384
+  load_finetuned: True
+  finetuned: "/public/home/lirj2/projects/pix2sgg/lavis/output/BLIP/rel_detection_psg/20230825204-det_pretrain-train/checkpoint_5_cvted.pth"
+
+datasets:
+  gqa: # name of the dataset builder
+    type: "balanced_val" # balanced_val balanced_testdev
+    vis_processor:
+        train:
+          name: "blip_image_train"
+          image_size: 384
+        eval:
+          name: "blip_image_eval"
+          image_size: 384
+    text_processor:
+        train:
+          name: "blip_question"
+        eval:
+          name: "blip_question"
+
+run:
+  task: gqa
+  # optimization-specific
+  batch_size_train: 96
+  batch_size_eval: 96
+  num_workers: 4
+
+  # inference-specific
+  max_len: 10
+  min_len: 1
+  num_beams: 3
+  num_ans_candidates: 128
+  inference_method: "generate"
+
+  seed: 42
+  output_dir: "output/BLIP/GQA"
+
+  evaluate: True
+  test_splits: ["test"]
+
+  # distribution-specific
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True

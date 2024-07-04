@@ -1,0 +1,1 @@
+python -m torch.distributed.run --master_port 13919  --nproc_per_node=4 train.py --cfg-path lavis/projects/blip2/train/sgg_concate_vrd_opt2.7b_ft.yaml --job-name $1

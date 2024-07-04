@@ -1,0 +1,1 @@
+python -m torch.distributed.run --nproc_per_node=4  --master_port 13949  train.py --cfg-path lavis/projects/blip2/train/caption_coco_ft.yaml --job-name sgg_ckpt_coco_cap

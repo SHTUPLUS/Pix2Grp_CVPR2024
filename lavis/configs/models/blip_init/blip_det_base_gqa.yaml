@@ -1,0 +1,47 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_detection
+  load_finetuned: True
+
+  # detection
+  # pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/detection_gqa/20230321143-gqa_det-train/checkpoint_9.pth"
+
+  pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/model_base_capfilt_large_for_rel_det.pth"
+  # finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/detection_oiv6/20230221105-mean_loss_reduction_640_imagesize_continue-train/checkpoint_5.pth"
+  finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/rel_detection_oiv6/20230321113-open-vocab_test-train/checkpoint_80.pth"
+
+  # vit encoder
+  vit_type: "base"
+  vit_grad_ckpt: False
+  vit_ckpt_layer: 0
+
+  # image_size: 640
+  top_k_label_num: 5
+
+  # bert config
+  med_config_path: "configs/models/med_config_det.json"
+
+  # generation configs
+  prompt: "a picture of "
+
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/gqa/annotations/categories_dict.json"
+
+
+preprocess:
+    vis_processor:
+        train:
+          name: "blip_det_image_train"
+          # image_size: 640
+        eval:
+          name: "blip_det_image_eval"
+          # image_size: 640
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "a picture of "
+        eval:
+          name: "blip_caption"

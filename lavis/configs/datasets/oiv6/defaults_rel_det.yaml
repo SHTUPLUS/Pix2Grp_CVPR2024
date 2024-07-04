@@ -1,0 +1,28 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  oiv6_rel_detection: # name of the dataset builder
+    dataset_card: dataset_card/coco_caption.md
+    # data_dir: ${env.data_dir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url: ""
+          md5: ""
+          storage: openimages/open-imagev6/annotations/vrd-train-anno.json
+        val:
+          url: ""
+          md5: ""
+          storage: openimages/open-imagev6/annotations/vrd-val-anno.json
+        test:
+          url: ""
+          md5: ""
+          storage: openimages/open-imagev6/annotations/vrd-test-anno.json
+      images:
+        storage: openimages/open-imagev6/images

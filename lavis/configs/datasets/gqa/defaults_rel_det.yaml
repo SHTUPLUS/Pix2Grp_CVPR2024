@@ -1,0 +1,94 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  gqa_rel_detection:
+    # data_dir: ${env.data_dir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/train_rel.json
+        train_bigbox:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/train_rel_bigbox.json
+
+        train_bigbox_headcate300_100:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/train_rel_300-100_bigbox.json
+        
+        train_bigbox_headcate300_300:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/train_rel_300-300_bigbox.json
+
+        train_bigbox_headcate300_200:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/train_rel_300-200_bigbox.json
+
+        val:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_rel.json
+                
+        val_bigbox_headcate300_100:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_rel_300-100_bigbox.json
+        
+        val_bigbox_headcate300_300:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_rel_300-300_bigbox.json
+        
+        val_bigbox_headcate300_200:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_rel_300-200_bigbox.json
+
+        val_mini_bigbox:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_mini_rel_bigbox.json
+        
+        val_mini_bigbox_headcate300_100:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_mini_rel_300-100_bigbox.json
+        val_mini_bigbox_headcate300_200:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_mini_rel_300-200_bigbox.json
+
+        val_mini_bigbox_headcate300_300:
+          url: ""
+          md5: ""
+          # storage: gqa/annotations/val_rel.json
+          storage: gqa/annotations/val_mini_rel_300-300_bigbox.json
+
+        val_mini:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/val_mini_rel.json
+        test:
+          url: ""
+          md5: ""
+          storage: gqa/annotations/test_rel.json
+      images:
+          storage: /mnt/petrelfs/share_data/basemodel/dataset/multimodality/gqa/images

@@ -1,0 +1,34 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+datasets:
+  psg_rel_detection_zs_pred: # name of the dataset builder
+    dataset_card: dataset_card/coco_caption.md
+    # data_dir: ${env.data_dir}/datasets
+    data_type: images # [images|videos|features]
+
+    build_info:
+      # Be careful not to append minus sign (-) before split to avoid itemizing
+      annotations:
+        train:
+          url: 
+            - psg/psg_train_zs_pred.json
+          storage: 
+            - psg/psg_train_zs_pred.json
+          
+        test:
+          url: 
+            - psg/psg_val_test.json
+          storage: 
+            - psg/psg_val_test.json
+
+        val:
+          url: 
+            - psg/psg_val_dev.json
+          storage: 
+            - psg/psg_val_dev.json
+
+      images:
+        storage: coco/images

@@ -1,0 +1,56 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+# Overall Accuracy is: 43.98
+model:
+  arch: blip2_vicuna_instruct
+  model_type: vicuna7b
+  use_grad_checkpoint: False
+  prompt: "Question: {} Short answer:"
+  image_size: 384
+
+  max_len: 256
+  max_output_txt_len: 16
+
+datasets:
+  gqa: # name of the dataset builder
+    type: balanced_testdev
+    vis_processor:
+        eval:
+          name: "blip_image_eval"
+          image_size: 384
+    text_processor:
+        eval:
+          name: "blip_question"
+    # build_info:
+    #     images:
+    #         storage: "/export/share/datasets/vision/GQA/images/"
+
+run:
+  task: gqa
+  # optimization-specific
+  batch_size_train: 1
+  batch_size_eval: 1
+  num_workers: 4
+
+  # inference-specific
+  max_len: 256
+  min_len: 1
+  max_output_txt_len: 128
+  num_beams: 5
+  inference_method: "generate"
+  prompt: "Question: {} Short answer:"
+
+  seed: 42
+  output_dir: "output/BLIP2_instruct/GQA"
+
+  evaluate: True
+  test_splits: ["val"]
+
+  # distribution-specific
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True

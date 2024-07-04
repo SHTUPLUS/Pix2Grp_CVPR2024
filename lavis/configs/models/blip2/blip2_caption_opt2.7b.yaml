@@ -1,0 +1,49 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: caption_coco_opt2.7b
+  load_finetuned: True
+
+  # pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/blip2_pretrained_opt2.7b.pth"
+
+  pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/converted_blipv2_sgg_psg_ckpt_lavis.pth"
+  
+  # finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP2/rel_detection_psg/20230523104-test_train_pos_adaptor_no_label_smooth-train/checkpoint_0.pth"
+  finetuned: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/ckpt/blip2_caption_opt2.7b.pth"
+
+  # vit encoder
+  image_size: 364
+  # image_size: 224
+  drop_path_rate: 0
+  use_grad_checkpoint: False
+  vit_precision: "fp32"
+  freeze_vit: True
+
+  # Q-Former
+  num_query_token: 32
+
+  # OPT
+  opt_model: "facebook/opt-2.7b"
+
+  # generation configs
+  prompt: "a photo of"
+
+
+preprocess:
+    vis_processor:
+        train:
+          name: "blip_image_train"
+          image_size: 364
+          # image_size: 224
+        eval:
+          name: "blip_image_eval"
+          image_size: 364
+          # image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"

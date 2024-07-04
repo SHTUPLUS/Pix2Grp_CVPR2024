@@ -1,0 +1,116 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+
+
+model:
+  arch: blip2_opt_vrd
+  model_type: base_oiv6
+  
+  use_grad_checkpoint: True
+  freeze_vit: True
+  
+  load_finetuned: False
+  #  from the zs predicate for fast experiments
+  pretrained: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP2/rel_detection_oiv6/20230608102-zs_predicate-train/checkpoint_40.pth"
+
+  max_txt_len: 1024 # test time
+
+  vit_precision: fp32
+
+  max_objects: 16
+  dump_pred: False
+  dump_dir: "/mnt/petrelfs/lirongjie/project/LAVIS/lavis/output/BLIP/rel_detection_psg/vis_dump_val"
+  
+  num_coord_bin: 640
+  image_size: 364
+  # image_size: 224
+
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/openimages/open-imagev6/annotations/categories_dict.json"
+  pos_adapter: True
+  pos_adapter_tfmer_layer: 6
+
+  finetune_strategy: 'partial_lyr'
+  finetune_layer_num: 1
+
+datasets:
+  oiv6_rel_detection: # name of the dataset builder
+    vis_processor:
+        train:
+          name: "blip_det_image_train"
+          image_size: 364
+          # image_size: 224
+        eval:
+          name: "blip_det_image_eval"
+          image_size: 364
+          # image_size: 224
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "a picture of "
+        eval:
+          name: "blip_caption"
+
+
+run:
+  task: relation_detection
+  # optimizer
+
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 1e-5
+  min_lr: 0
+  warmup_lr: 1e-8
+  warmup_steps: 500
+  weight_decay: 0.05
+
+  max_epoch: 50
+
+  special_lr_param:
+    name: ["opt_model.pos_adapter.pos_encoder", "opt_model.pos_adapter.pos_decoder", 
+            "opt_model.pos_adapter.bbox_embed", "opt_model.pos_adapter.enc_input_proj",
+            "opt_model.pos_adapter.ent_hs_input_proj", "opt_model.pos_adapter.conv_module"]
+    # name: ["none", ]
+    lr: 1e-5
+    weight_decay: 1e-4
+
+  batch_size_train: 14
+  batch_size_eval: 14
+  num_workers: 4
+
+  save_epoch: 5
+
+  max_len: 2048
+  min_len: 64
+
+  # max_len: 2048 # inference time
+  # min_len: 300
+  num_beams: 1
+
+  seed: 42
+  output_dir: "output/BLIP2/rel_detection_oiv6"
+
+  experiments_mode: sggen # sggen sgcls
+  generation_mode: sampling # sampling search
+
+  amp: False
+  resume_ckpt_path: null
+
+  evaluate: False 
+  train_splits: ["train"]
+  # train_splits: ["train_zs_pred"]
+  # train_splits: ["train_zs_trip"]
+  valid_splits: ["val"]
+  test_splits: ["test"]
+  # valid_splits: ["train"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/openimages/open-imagev6/annotations/categories_dict.json"
+
+  zeroshot_cfg:
+    zs_triplets: "/mnt/petrelfs/lirongjie/project/LAVIS/cache/openimages/open-imagev6/annotations/zeroshot_triplet.pytorch"
+    zs_predicate: [8, 4, 28, 20, 9, 13, 18, 22, 10, 3, 23, 29, 26, 5, 24, 11, 21, 15, 14, 27, 25]

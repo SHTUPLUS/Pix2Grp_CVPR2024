@@ -1,0 +1,78 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection_close_vocab
+  model_type: base_oiv6
+  load_finetuned: False
+  num_coord_bin: 1000
+  add_noise: False
+  dump_pred: False
+
+  max_txt_len: 1024 # training time
+  max_objects: 64
+  max_pos_objects: 40
+  mask_label_ratio: 0.0
+  reduction: 'mean' # none mean
+
+  prompt: "a picture of " # "The scene of "
+
+  aux_close_classifier: False
+  extend_entity_list: False
+  image_size: 640
+
+
+datasets:
+  oiv6_rel_detection: # name of the dataset builder
+    vis_processor:
+        train:
+          image_size: 640
+          name: "blip_det_image_train"
+        eval:
+          image_size: 640
+          name: "blip_det_image_eval"
+    text_processor:
+        train:
+          name: "blip_caption"
+          prompt: "a picture of "
+        eval:
+          name: "blip_caption"
+
+run:
+  task: relation_detection
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 1e-5
+  min_lr: 1e-7
+  weight_decay: 0.05
+  max_epoch: 101
+  batch_size_train: 8
+  batch_size_eval: 8
+  num_workers: 3
+
+  save_epoch: 5
+
+  max_len: 1024
+  min_len: 600
+
+  # max_len: 2048 # inference time
+  # min_len: 300
+  num_beams: 1
+
+  seed: 42
+  output_dir: "output/BLIP/rel_detection_oiv6"
+
+  amp: False
+  resume_ckpt_path: null
+
+  evaluate: False 
+  train_splits: ["train"]
+  valid_splits: ["val"]
+  test_splits: ["test"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True

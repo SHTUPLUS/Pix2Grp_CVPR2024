@@ -1,0 +1,118 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection_pgsg
+  model_type: base_vg
+  load_finetuned: False
+
+  pretrained: "cache/ckpts/model_base_capfilt_large.pth"
+  
+  # pretrained: "/public/home/lirj2/projects/pix2sgg/lavis/output/BLIP/rel_detection_vg/20231017201-vg_continue-train/checkpoint_15.pth"
+  # pretrained: /public/home/lirj2/projects/pix2sgg/lavis/output/BLIP/rel_detection_vg/20231017111-vg_pix_sgg-train/checkpoint_15.pth
+
+  num_coord_bin: 640
+  add_noise: False
+  dump_pred: False
+
+  max_txt_len: 512 # training time
+  max_objects: 9
+  max_pos_objects: 12
+  mask_label_ratio: 0.0
+  reduction: 'mean' # none mean
+
+  prompt: "A visual scene of: "
+
+  aux_close_classifier: False
+
+  image_size: 384
+  box_loss_weight: 1.2
+  cate_dict_url: "/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/categories_dict.json"
+  # "The scene of "
+
+  close_clser: False
+
+  post_proc_cfg:
+    ent_ampl_scale: 5.0
+    rel_ampl_scale: 2.0
+  
+  top_k_ent_label_num: 1
+  top_k_predicate_label_num: 5
+
+datasets:
+  vg_rel_detection_train: # name of the dataset builder 
+  # vg_rel_detection_zs_pred:
+    vis_processor:
+        train:
+          name: "blip_det_image_train"
+          image_size: 384
+        eval:
+          name: "blip_det_image_eval"
+          image_size: 384
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"
+
+run:
+  task: relation_detection
+  # optimizer
+  lr_sched: "linear_warmup_cosine_lr"
+  init_lr: 3e-5
+  min_lr: 1e-7
+  weight_decay: 0.05
+  max_epoch: 101
+
+  special_lr_param: 
+    - ["text_decoder.pos_encoder", 1e-4,  1e-4]
+    - ["text_decoder.pos_decoder", 1e-4,  1e-4]
+    - ["text_decoder.bbox_embed", 1e-4,  1e-4]
+    - ["text_decoder.enc_input_proj", 1e-4,  1e-4]
+    - ["text_decoder.ent_hs_input_proj", 1e-4,  1e-4]
+    - ["text_decoder.bert.embeddings.word_embeddings", 1e-18,  0.05]
+
+  batch_size_train: 16
+  batch_size_eval: 12
+  num_workers: 4
+
+  save_epoch: 10
+
+  max_len: 512
+  min_len: 512
+
+  num_beams: 1
+
+  seed: 42
+  output_dir: "output/BLIP/rel_detection_vg"
+
+  experiments_mode: sggen # sggen sgcls
+  generation_mode: sampling # sampling search
+
+  amp: False
+  resume_ckpt_path: null
+
+  evaluate: False 
+  # train_splits: ["train"]
+  # valid_splits: ["val_mini"]
+  train_splits: ["train"]
+  valid_splits: ["val"]
+  # test_splits: ["test"]
+
+  device: "cuda"
+  world_size: 1
+  dist_url: "env://"
+  distributed: True
+  cate_dict_url: "/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/categories_dict.json"
+  
+  zeroshot_cfg:
+    zs_triplets: '/public/home/lirj2/projects/pix2sgg/cache/vg/vg_motif_anno/zeroshot_triplet_lavis.pytorch'
+    zs_predicate: [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 23, 25, 26, 27, 31, 34, 35, 36, 40, 41, 42, 44, 48]
+
+
+
+
+    # [ 3,  5, 18, 13, 19, 10,  0, 15, 24,  4,  2, 23, 11,  8, 22, 14,  9, 12, 17,  6, 20,  1,  7, 21, 16]
+  

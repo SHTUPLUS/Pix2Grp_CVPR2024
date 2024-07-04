@@ -1,0 +1,1 @@
+python -m torch.distributed.run --master_port 13619  --nproc_per_node=4 train.py --cfg-path lavis/projects/blip2/train/psg_vrd_vicuna7b_ft.yaml --job-name $1 --git-commit

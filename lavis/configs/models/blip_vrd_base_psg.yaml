@@ -1,0 +1,49 @@
+ # Copyright (c) 2022, salesforce.com, inc.
+ # All rights reserved.
+ # SPDX-License-Identifier: BSD-3-Clause
+ # For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+
+model:
+  arch: blip_rel_detection
+  load_finetuned: True
+  pretrained: "cache/ckpts/model_base_capfilt_large.pth"
+
+  # vit encoder
+  vit_type: "base"
+  vit_grad_ckpt: False
+  vit_ckpt_layer: 0
+
+  # image_size: 640
+  top_k_ent_label_num: 1
+  top_k_predicate_label_num: 2
+
+  num_coord_bin: 640
+
+  # bert config
+  med_config_path: "configs/models/med_config_det.json"
+  # generation configs
+  prompt: "The visual scene of: "
+
+  aux_close_classifier: False
+  
+  pos_adapter: True
+  pos_adapter_conv: "none"
+  pos_adapter_tfmer_layer: 6
+
+  cate_dict_url: "cache/psg/categories_dict.json"
+  # "The scene of "
+
+
+preprocess:
+    vis_processor:
+        train:
+          # image_size: 640
+          name: "blip_det_image_train"
+        eval:
+          # image_size: 640
+          name: "blip_det_image_eval"
+    text_processor:
+        train:
+          name: "blip_caption"
+        eval:
+          name: "blip_caption"
