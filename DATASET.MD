@@ -9,16 +9,21 @@ You can download the annotation directly by following steps.
 
 2. Download the [scene graphs annotations](https://shanghaitecheducn-my.sharepoint.com/:u:/g/personal/lirj2_shanghaitech_edu_cn/EfI9vkdunDpCqp8ooxoHhloBE6KDuztZDWQM_Sbsw_1x5A?e=N8gWIS) and extract them to `/path/to/vg/vg_motif_anno`.
 
-3. Move or link the image and annotation into the project folder:
+3. Move the categories_dict.json to dataset directory: 
+```bash
+mv all_categories_dict\vg\vg_motif_anno\categories_dict.json /path/to/vg/vg_motif_anno
+```
+
+4. Move or link the image and annotation into the project folder:
 ```bash
 ln -s /path-to-vg_datasets/vg cache
 ``` 
 
-4. Create a soft link for open-vocabulary SGG training:
+5. Create a soft link for open-vocabulary SGG training:
 ``` bash
 ln -s cache/vg/vg_motif_anno/VG-SGG-train.h5 cache/vg/vg_motif_anno/VG-SGG-train_zs_pred.h5
 ``` 
-Unseen classes will be filtered during dataset loading according to the filename.
+Unseen classes will be filtered during dataset loading according to the filename with keyword: `zs_pred`.
 
 
 ## PSG
@@ -32,7 +37,13 @@ ln -s /path-to-vg_datasets/psg cache
 ln -s /path-to-coco2017 cache/coco # include train2017 and val2017
 ``` 
 
-4. Create a soft link for open-vocabulary SGG training:
+4. Move the categories_dict.json to dataset directory: 
+```bash
+mv all_categories_dict\psg\categories_dict.json /path-to-vg_datasets/psg
+```
+
+
+5. Create a soft link for open-vocabulary SGG training:
 ``` bash
 ln -s cache/psg/psg_train.json cache/psg/psg_train_zs_pred.json
 ``` 
