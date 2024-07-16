@@ -45,7 +45,7 @@ python setup.py build develop
 
 
 ## Datasets
-Check [DATASET.md](DATASET.md)  for instructions of dataset preprocessing.
+Check [DATASET.md](DATASET.MD)  for instructions of dataset preprocessing.
 
 ## Model Zoo
 
