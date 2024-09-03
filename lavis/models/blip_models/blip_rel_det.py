@@ -313,9 +313,7 @@ class BlipRelDetection(BlipDetection):
 
     @classmethod
     def init_tokenizer(cls):
-        tokenizer = StageBertTokenizer.from_pretrained(
-            "/public/home/lirj2/projects/LAVIS_GITM/data/bert-base-uncased",
-              local_files_only=True)
+        tokenizer = StageBertTokenizer.from_pretrained("bert-base-uncased",)
         vocab_size = len(tokenizer)
         tokenizer.add_special_tokens({"bos_token": "[DEC]"})
         tokenizer.add_special_tokens({"additional_special_tokens": ["[ENC]"]})
@@ -1603,8 +1601,7 @@ class XBertLMHeadDecoderDetHead(XBertLMHeadDecoder):
 
         if from_pretrained:
             print("load from pretrained bert-base-uncased")
-            return cls.from_pretrained("/public/home/lirj2/projects/LAVIS_GITM/data/bert-base-uncased", 
-                                       config=med_config, ignore_mismatched_sizes=False)
+            return cls.from_pretrained("bert-base-uncased", config=med_config, ignore_mismatched_sizes=False)
         else:
             return cls(config=med_config, pos_adapter=cfg.get("pos_adapter", False))
 
