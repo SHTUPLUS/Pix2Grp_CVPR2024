@@ -50,23 +50,24 @@ Check [DATASET.md](DATASET.MD)  for instructions of dataset preprocessing.
 ## Model Zoo
 
 ### Open Vocabulary SGG
+The model weight can be download from: https://huggingface.co/rj979797/PGSG-CVPR2024/tree/main
 
 |              | **Novel+base** |             |   **Novel**  | **checkpoint** |
 |--------------|:--------------:|:-----------:|:------------:|----------------|
 | **Datasets** |  **mR50/100**  | **R50/100** | **mR50/100** |                |
-| VG           |  6.2/8.3       |  15.1/18.4  |  3.7/5.2     |                |
-| VG-SGCls     |  9.7/13.8      |  26.8/33.2  |  5.1/7.7     |                |
-| PSG          | 15.3/17.7      | 23.7/25.4   |  6.7/9.6     |                |
+| VG           |  6.2/8.3       |  15.1/18.4  |  3.7/5.2     |  vg_ov_sgg.pth |
+| VG-SGCls     |  9.7/13.8      |  26.8/33.2  |  5.1/7.7     |  vg_ov_sgg.pth |
+| PSG          | 15.3/17.7      | 23.7/25.4   |  6.7/9.6     |  psg_ov_sgg.pth|
 <!-- | OIv6         |                |             |              |                | -->
 
 ### Close Vocabulary SGG
 
 | **Datasets** | **mR50/100** | **R50/100** | **checkpoint** |
 |--------------|:------------:|:-----------:|----------------|
-| VG           |  9.0/11.5    | 17.7/ 20.7  |                |
-| PSG          |  14.5/17.6   | 25.8/28.9   |                |
-| VG-c         |  10.4/12.7   | 20.3/23.6   |                |
-| PSG-c        |  21.2/22.0   | 34.9/36.1   |                |
+| VG           |  9.0/11.5    | 17.7/ 20.7  |vg_sgg.pth   |
+| PSG          |  14.5/17.6   | 25.8/28.9   | psg_sgg.pth   |
+| VG-c         |  10.4/12.7   | 20.3/23.6   | vg_sgg_close_clser.pth  |
+| PSG-c        |  21.2/22.0   | 34.9/36.1   | psg_sgg_close_clser.pth  |
 <!-- | OIv6         |              |             |                | -->
 
 ## Training and  Evaluation
